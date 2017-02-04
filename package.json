@@ -1,0 +1,33 @@
+{
+  "name": "bower-outdated",
+  "version": "0.0.1",
+  "description": "This command will check the bower registry to see if any (or, specific) installed packages are currently outdated",
+  "license": "Apache-2.0",
+  "main": "lib",
+  "scripts": {
+    "prepublish": "coffee -o lib -c src/index.coffee",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HugoCapocci/bower-outdated.git"
+  },
+  "keywords": [
+    "bower",
+    "dependency",
+    "update",
+    "outdated"
+  ],
+  "author": "Hugo Capocci",
+  "bugs": {
+    "url": "https://github.com/HugoCapocci/bower-outdated/issues"
+  },
+  "homepage": "https://github.com/HugoCapocci/bower-outdated#readme",
+  "dependencies": {
+    "ansicolors": "^0.3.2",
+    "bluebird": "^3.4.7",
+    "lodash": "^4.17.4",
+    "semver": "^5.3.0",
+    "text-table": "^0.2.0"
+  }
+}
