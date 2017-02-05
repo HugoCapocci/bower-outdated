@@ -1,9 +1,23 @@
 {
   "name": "bower-outdated",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "This command will check the bower registry to see if any (or, specific) installed packages are currently outdated",
   "license": "Apache-2.0",
-  "main": "lib",
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "main": "lib/index.js",
+  "bin": {
+    "bower-outdated": "./bin/bower-outdated"
+  },
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "preferGlobal": true,
   "scripts": {
     "prepublish": "coffee -o lib -c src/index.coffee",
     "test": "echo \"Error: no test specified\" && exit 1"

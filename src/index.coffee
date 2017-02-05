@@ -12,7 +12,6 @@ fs = require 'fs'
 #TODO specify path
 path = './'
 
-#search wanted version (in conf)
 bowerConf = require path + 'bower.json'
 
 checkActualVersions = ->
