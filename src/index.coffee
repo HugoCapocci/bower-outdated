@@ -9,6 +9,9 @@ table = require 'text-table'
 semver = require 'semver'
 fs = require 'fs'
 
+#by default, only display outdated
+displayAll = false
+
 #TODO specify path from cwd in argument ?
 path = process.cwd() + '/'
 bowerConf = require path + 'bower.json'
@@ -33,6 +36,7 @@ ansiTrim = (str) ->
   str.replace r, ''
 
 makePretty = ({name, actualVersion, wantedVersion, latestVersion}) ->
+  return if not displayAll and (actualVersion is latestVersion)
   columns = [
     name
     actualVersion || 'MISSING'
@@ -66,7 +70,7 @@ Promise.map bowerDependencies, (bowerDependency) ->
     'Wanted'
     'Latest'
   ]
-  outTable = [headers].concat bowerDependencies.map makePretty
+  outTable = [headers].concat _.compact bowerDependencies.map makePretty
   tableOpts =
     align: ['l', 'r', 'r', 'r']
     stringLength: (s) -> ansiTrim(s).length

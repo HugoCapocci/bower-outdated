@@ -24,5 +24,5 @@ Very similar to `npm outdated` command
 
 ## What's next (Road to 1.0)
 
-* Display only outdated dependencies
+* Add flag to display all dependencies, not only outdated
 * Optimize processing

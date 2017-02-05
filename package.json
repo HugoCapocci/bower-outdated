@@ -1,6 +1,6 @@
 {
   "name": "bower-outdated",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "This command will check the bower registry to see if any (or, specific) installed packages are currently outdated",
   "license": "Apache-2.0",
   "engines": {
