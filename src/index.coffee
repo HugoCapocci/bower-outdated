@@ -9,9 +9,8 @@ table = require 'text-table'
 semver = require 'semver'
 fs = require 'fs'
 
-#TODO specify path
-path = './'
-
+#TODO specify path from cwd in argument ?
+path = process.cwd() + '/'
 bowerConf = require path + 'bower.json'
 
 checkActualVersions = ->
