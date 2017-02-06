@@ -44,23 +44,30 @@ makePretty = ({name, actualVersion, wantedVersion, latestVersion}) ->
     latestVersion
   ]
   columns[0] = colors[if semver.satisfies(actualVersion, wantedVersion) then 'yellow' else 'red'] columns[0]
-  columns[2] = colors.green semver.validRange columns[2]
+  if columns[2] is 'git'
+    columns[2] = colors.green columns[2]
+  else
+    columns[2] = colors.green semver.validRange columns[2]
   columns[3] = colors.magenta columns[3]
   columns
 
-bowerDependencies = _.map bowerConf.dependencies, (value, key) ->
+mapDependencyFromConfig =  (value, key) ->
   name: key
-  wantedVersion: value
-bowerDependencies = bowerDependencies.concat _.map bowerConf.devDependencies, (value, key) ->
-  name: key
-  wantedVersion: value
+  wantedVersion: if _.startsWith value, 'git' then 'git' else value
+
+bowerDependencies = _.map bowerConf.dependencies, mapDependencyFromConfig
+bowerDependencies = bowerDependencies.concat _.map bowerConf.devDependencies, mapDependencyFromConfig
 
 Promise.map bowerDependencies, (bowerDependency) ->
   new Promise (resolve, reject) ->
+    if bowerDependency.wantedVersion is 'git'
+      bowerDependency.latestVersion = 'git'
+      return resolve()
     bower.commands.info bowerDependency.name
     .on 'end', (results) ->
       bowerDependency.latestVersion = results.latest.version
       resolve()
+
 .then ->
   checkActualVersions()
 .then ->
