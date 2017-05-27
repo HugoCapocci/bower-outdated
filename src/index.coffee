@@ -14,9 +14,26 @@ displayAll = false
 
 #TODO specify path from cwd in argument ?
 path = process.cwd() + '/'
-bowerConf = require path + 'bower.json'
 
-checkActualVersions = ->
+try
+  bowerConf = require path + 'bower.json'
+catch error
+  console.error colors.red "Cannot find #{path}bower.json config file."
+  process.exit 1
+
+displayProcessingMessage = (message) ->
+  P = ['\\', '|', '/', '-']
+  x = 0
+  setInterval ->
+    process.stdout.write '\r' + colors.cyan(P[x++]) + ' ' + message
+    x &= 3
+  , 250
+
+clearProcessingMessage = (processingMessage)->
+  clearInterval processingMessage
+  process.stdout.write '\r'
+
+checkInstalledVersions = ->
   src = path + 'bower_components'
   try
     bowerRc = JSON.parse fs.readFileSync path + '.bowerrc'
@@ -58,6 +75,7 @@ mapDependencyFromConfig =  (value, key) ->
 bowerDependencies = _.map bowerConf.dependencies, mapDependencyFromConfig
 bowerDependencies = bowerDependencies.concat _.map bowerConf.devDependencies, mapDependencyFromConfig
 
+processingMessage = displayProcessingMessage 'check latests dependencies'
 Promise.map bowerDependencies, (bowerDependency) ->
   new Promise (resolve, reject) ->
     if bowerDependency.wantedVersion is 'git'
@@ -67,10 +85,12 @@ Promise.map bowerDependencies, (bowerDependency) ->
     .on 'end', (results) ->
       bowerDependency.latestVersion = results.latest.version
       resolve()
-
 .then ->
-  checkActualVersions()
+  clearProcessingMessage processingMessage
+  processingMessage = displayProcessingMessage 'check installed dependencies'
+  checkInstalledVersions()
 .then ->
+  clearProcessingMessage processingMessage
   headers = [
     'Package'
     'Current'
@@ -83,3 +103,5 @@ Promise.map bowerDependencies, (bowerDependency) ->
     stringLength: (s) -> ansiTrim(s).length
   console.log table outTable, tableOpts
   return
+.catch (error) ->
+  console.error error
