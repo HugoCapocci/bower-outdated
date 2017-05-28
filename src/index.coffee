@@ -43,9 +43,11 @@ checkInstalledVersions = ->
 
   Promise.map bowerDependencies, (bowerDependency) ->
     new Promise (resolve, reject) ->
-      fs.readFile src + '/' + bowerDependency.name + '/.bower.json', (error, data) ->
-        return reject error if error
-        bowerDependency.actualVersion = JSON.parse(data).version
+      name = if bowerDependency.installedName then bowerDependency.installedName else bowerDependency.name
+      file = src + '/' + name + '/.bower.json'
+      fs.readFile file, (error, data) ->
+        unless error
+          bowerDependency.actualVersion = JSON.parse(data).version
         resolve()
 
 ansiTrim = (str) ->
@@ -69,8 +71,17 @@ makePretty = ({name, actualVersion, wantedVersion, latestVersion}) ->
   columns
 
 mapDependencyFromConfig =  (value, key) ->
+  sharpIndex = value.indexOf '#'
+  if sharpIndex isnt -1
+    if _.startsWith value, 'git'
+      value = 'git'
+    else
+      installedName = key
+      key = value.substring 0, sharpIndex
+      value = value.substring sharpIndex + 1
   name: key
-  wantedVersion: if _.startsWith value, 'git' then 'git' else value
+  wantedVersion: value
+  installedName: installedName if installedName?
 
 bowerDependencies = _.map bowerConf.dependencies, mapDependencyFromConfig
 bowerDependencies = bowerDependencies.concat _.map bowerConf.devDependencies, mapDependencyFromConfig
