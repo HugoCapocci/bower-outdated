@@ -54,20 +54,20 @@ ansiTrim = (str) ->
   r = new RegExp '\x1b(?:\\[(?:\\d+[ABCDEFGJKSTm]|\\d+;\\d+[Hfm]|\\d+;\\d+;\\d+m|6n|s|u|\\?25[lh])|\\w)', 'g'
   str.replace r, ''
 
-makePretty = ({name, actualVersion, wantedVersion, latestVersion}) ->
-  return if not displayAll and (actualVersion is latestVersion)
+makePretty = ({name, wantedVersion, latestVersion}) ->
   columns = [
     name
-    actualVersion || 'MISSING'
     wantedVersion
     latestVersion
   ]
-  columns[0] = colors[if semver.satisfies(actualVersion, wantedVersion) then 'yellow' else 'red'] columns[0]
-  if columns[2] is 'git'
-    columns[2] = colors.green columns[2]
+  weWantLatestVersion = semver.satisfies(latestVersion, wantedVersion)
+  columns[0] = colors[if weWantLatestVersion then 'green' else 'red'] columns[0]
+  if columns[1] is 'git'
+    columns[1] = colors.green columns[1]
   else
-    columns[2] = colors.green semver.validRange columns[2]
-  columns[3] = colors.magenta columns[3]
+    columns[1] = colors[if weWantLatestVersion then 'green' else 'red'] semver.validRange columns[1]
+  columns[2] = colors[if weWantLatestVersion then 'green' else 'magenta'] columns[2]
+  if !weWantLatestVersion then columns[3] = colors['white'] "New Version Available"
   columns
 
 mapDependencyFromConfig =  (value, key) ->
@@ -104,13 +104,13 @@ Promise.map bowerDependencies, (bowerDependency) ->
   clearProcessingMessage processingMessage
   headers = [
     'Package'
-    'Current'
-    'Wanted'
+    'Version we want'
     'Latest'
+    ''
   ]
   outTable = [headers].concat _.compact bowerDependencies.map makePretty
   tableOpts =
-    align: ['l', 'r', 'r', 'r']
+    align: ['l', 'r', 'r', 'l']
     stringLength: (s) -> ansiTrim(s).length
   console.log table outTable, tableOpts
   return
