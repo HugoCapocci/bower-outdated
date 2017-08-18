@@ -30,6 +30,7 @@ lib
 # Dependency directories
 node_modules
 jspm_packages
+.idea
 
 # Optional npm cache directory
 .npm

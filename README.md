@@ -26,3 +26,17 @@ Very similar to `npm outdated` command
 
 * Add flag to display all dependencies, not only outdated
 * Optimize processing
+
+
+## DEV
+
+To compile the code locally (once)
+
+```
+coffee --compile --output lib/ src/
+```
+
+To compile on the fly (watcher)
+```
+coffee -o lib/ -cw src/
+```
