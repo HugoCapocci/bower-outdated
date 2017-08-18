@@ -105,8 +105,8 @@ Promise.map bowerDependencies, (bowerDependency) ->
   headers = [
     'Package'
     'Version we want'
-    'Latest Available'
-    'Action Required'
+    'Latest'
+    ''
   ]
   outTable = [headers].concat _.compact bowerDependencies.map makePretty
   tableOpts =
