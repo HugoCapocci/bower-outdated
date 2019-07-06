@@ -19,8 +19,9 @@
   ],
   "preferGlobal": true,
   "scripts": {
-    "prepublish": "coffee -o lib -c src/index.coffee",
-    "test": "echo \"no test specified\" && exit 0"
+    "prepublish": "npm run snyk-protect; coffee -o lib -c src/index.coffee",
+    "test": "echo \"no test specified\" && exit 0",
+    "snyk-protect": "snyk protect"
   },
   "repository": {
     "type": "git",
@@ -43,6 +44,8 @@
     "bower": "1.8.8",
     "lodash": "^4.17.4",
     "semver": "^5.3.0",
-    "text-table": "^0.2.0"
-  }
+    "text-table": "^0.2.0",
+    "snyk": "^1.192.3"
+  },
+  "snyk": true
 }
